@@ -72,8 +72,11 @@ def send_telegram(message):
 # ═══════════════════════════════════════
 def get_candles(symbol, timeframe, limit=100):
     try:
-        ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
-        return ohlcv  # [timestamp, open, high, low, close, volume]
+        interval = "15m" if timeframe == "15m" else "1h"
+        ticker = yf.Ticker(symbol)
+        df = ticker.history(period="5d", interval=interval)
+        ohlcv = [[int(row.name.timestamp()*1000), row.Open, row.High, row.Low, row.Close, row.Volume] for _, row in df.iterrows()]
+        return ohlcv[-limit:]
     except Exception as e:
         print(f"❌ Error fetching {symbol}: {e}")
         return []
