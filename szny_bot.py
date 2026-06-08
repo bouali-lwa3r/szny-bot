@@ -80,7 +80,7 @@ def is_ny_session():
     now = datetime.now(timezone.utc)
     hour = now.hour
     # جلسة نيويورك: 13:00 - 22:00 UTC = 3م - 12ليل بتوقيت المغرب
-    return 13 <= hour <= 22
+    return True
 
 # ═══════════════════════════════════════
 #         كشف Liquidity Sweep
