@@ -32,13 +32,16 @@ TOLERANCE_PIPS = 5        # هامش Equal Highs/Lows
 RR             = 2.0      # Risk/Reward
 SL_PIPS_FOREX  = 15       # SL للفوركس
 SL_PIPS_GOLD   = 250      # SL للذهب (بالنقاط)
-
+SYMBOLS = {
+    "EURUSD": "EUR/USDT",
+    "GBPUSD": "GBP/USDT", 
+    "XAUUSD": "XAU/USDT"
+}
 # ═══════════════════════════════════════
 #         إعداد Exchange
 # ═══════════════════════════════════════
-exchange = ccxt.binance({
+exchange = ccxt.okx({
     'enableRateLimit': True,
-    'options': {'defaultType': 'spot'}
 })
 
 last_signal_time = {}
