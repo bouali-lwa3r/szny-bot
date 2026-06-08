@@ -7,7 +7,7 @@ Sweep + Zone + New York + Yield
 import requests
 import time
 from datetime import datetime, timezone
-import ccxt
+import yfinance as yf
 
 # ═══════════════════════════════════════
 #         إعدادات Telegram
@@ -19,10 +19,11 @@ TELEGRAM_CHATID = "5435780133"
 #         الأزواج المتابعة
 # ═══════════════════════════════════════
 SYMBOLS = {
-    "EURUSD": "EUR/USD",
-    "GBPUSD": "GBP/USD",
-    "XAUUSD": "XAU/USD"
+    "EURUSD": "EURUSD=X",
+    "GBPUSD": "GBPUSD=X",
+    "XAUUSD": "GC=F"
 }
+
 
 # ═══════════════════════════════════════
 #         إعدادات الاستراتيجية
@@ -36,11 +37,16 @@ SL_PIPS_GOLD   = 250      # SL للذهب (بالنقاط)
 # ═══════════════════════════════════════
 #         إعداد Exchange
 # ═══════════════════════════════════════
-exchange = ccxt.okx({
-    'enableRateLimit': True,
-})
-
-last_signal_time = {}
+def get_candles(symbol, timeframe, limit=100):
+    try:
+        interval = "15m" if timeframe == "15m" else "1h"
+        ticker = yf.Ticker(symbol)
+        df = ticker.history(period="5d", interval=interval)
+        ohlcv = [[row.name.timestamp()*1000, row.Open, row.High, row.Low, row.Close, row.Volume] for _, row in df.iterrows()]
+        return ohlcv[-limit:]
+    except Exception as e:
+        print(f"❌ Error fetching {symbol}: {e}")
+        return []
 
 # ═══════════════════════════════════════
 #         إرسال رسالة Telegram
